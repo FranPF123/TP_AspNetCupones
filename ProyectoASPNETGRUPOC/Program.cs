@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using PracticaLoginAuth.Data;
+using ProyectoASPNETGRUPOC.Data;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
