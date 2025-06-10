@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProyectoASPNETGRUPOC.Interfaces;
+using ProyectoASPNETGRUPOC.Model;
 
 namespace ProyectoASPNETGRUPOC.Controllers
 {
@@ -16,7 +17,24 @@ namespace ProyectoASPNETGRUPOC.Controllers
 			UServices = uServices;
 		}
 
-		[HttpGet("MiPerfil")]
+        [HttpGet]
+        [Authorize(Policy = "ControlUsuarios")]
+        public async Task<IActionResult> GetUsuarios()
+        {
+            try
+            {
+                List<Usuario> listaUsuarios = await UServices.GetUsuarios();
+
+
+                return Ok(listaUsuarios);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("MiPerfil")]
 		[Authorize]
 		public async Task<IActionResult> miPerfil()
 		{
