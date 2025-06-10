@@ -23,27 +23,27 @@ namespace ProyectoASPNETGRUPOC.Services
             return ListaUsuarios;
         }
 
-        public async Task<List<Usuario>> GetUsuariosPorRol(int id_Rol)
+        public async Task<List<DtoUsuarioMuestra>> GetUsuariosPorRol(int id_Rol)
         {
-            var ListaUsuariosPorRol = await _context.Usuarios.Include(r => r.Rol).Where(r => r.Rol.Id_Rol == id_Rol).OrderByDescending(u => u.User_Name).ToListAsync();
+            var ListaUsuariosPorRol = await _context.Usuarios
+                .Include(r => r.Rol)
+                .Where(r => r.Rol.Id_Rol == id_Rol)
+                .OrderByDescending(u => u.User_Name).Select(u => new DtoUsuarioMuestra
+                {
+                    UserName = u.User_Name,
+                    Password = u.Password,
+                    Nombre = u.Nombre,
+                    Apellido = u.Apellido,
+                    Dni = u.Dni,
+                    Email = u.Email,
+                    tipoUsuario = u.Rol.Nombre
+                }).ToListAsync();
 
             if (!ListaUsuariosPorRol.Any()) throw new KeyNotFoundException("No existe usuarios con este Rol");
 
             return ListaUsuariosPorRol;
         }
 
-        public async Task<Usuario> LoginUsuario(LoginModel login)
-        {
-
-
-            var Usuario = await _context.Usuarios.Include(u => u.Rol)
-                .Where(u => u.User_Name == login.UserName && u.Password == login.Password)
-                .FirstOrDefaultAsync();
-            if (Usuario == null) throw new KeyNotFoundException("Credenciales invalidas");
-
-
-            return Usuario;
-        }
 
         public async Task<DtoUsuarioMuestra> obtenerDatosDeUsuarioLogeado(int idUsuario)
         {

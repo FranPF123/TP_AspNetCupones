@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProyectoASPNETGRUPOC.Interfaces;
 using ProyectoASPNETGRUPOC.Model;
+using ProyectoASPNETGRUPOC.Model.DTO;
 
 namespace ProyectoASPNETGRUPOC.Controllers
 {
@@ -67,7 +68,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
         {
             try
             {
-                List<Usuario> lista = await UServices.GetUsuariosPorRol(id_Rol);
+                List<DtoUsuarioMuestra> lista = await UServices.GetUsuariosPorRol(id_Rol);
 
                 return Ok(lista);
             }
