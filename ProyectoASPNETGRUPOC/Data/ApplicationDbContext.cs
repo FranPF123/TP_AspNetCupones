@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace PracticaLoginAuth.Data
+namespace ProyectoASPNETGRUPOC.Data
 {
 	public class ApplicationDbContext : DbContext
 	{

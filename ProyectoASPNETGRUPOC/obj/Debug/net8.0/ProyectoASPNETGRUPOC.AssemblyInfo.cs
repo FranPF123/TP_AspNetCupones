@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProyectoASPNETGRUPOC")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e039afc37149253d63daacb4082dade1dae2f199")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8bd627ac08a56953eb4da8b8e4307a394151c505")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProyectoASPNETGRUPOC")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProyectoASPNETGRUPOC")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
