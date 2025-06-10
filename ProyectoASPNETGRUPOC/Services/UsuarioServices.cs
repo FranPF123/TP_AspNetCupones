@@ -15,16 +15,21 @@ namespace ProyectoASPNETGRUPOC.Services
             _context = context;
         }
 
-        public Task<List<Usuario>> GetUsuarios()
+        public async Task<List<Usuario>> GetUsuarios()
         {
-            throw new NotImplementedException();
-            //completar
+            var ListaUsuarios = await _context.Usuarios.Where(u => u.Estado == true).ToListAsync();
+            if (!ListaUsuarios.Any()) throw new KeyNotFoundException("Lista de Usuarios vacia");
+
+            return ListaUsuarios;
         }
 
-        public Task<List<Usuario>> GetUsuariosPorRol(int id_Rol)
+        public async Task<List<Usuario>> GetUsuariosPorRol(int id_Rol)
         {
-            throw new NotImplementedException();
-            //completar
+            var ListaUsuariosPorRol = await _context.Usuarios.Include(r => r.Rol).Where(r => r.Rol.Id_Rol == id_Rol).OrderByDescending(u => u.User_Name).ToListAsync();
+
+            if (!ListaUsuariosPorRol.Any()) throw new KeyNotFoundException("No existe usuarios con este Rol");
+
+            return ListaUsuariosPorRol;
         }
 
         public async Task<Usuario> LoginUsuario(LoginModel login)
