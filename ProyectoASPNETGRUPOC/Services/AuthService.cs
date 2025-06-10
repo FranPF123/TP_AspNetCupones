@@ -21,18 +21,43 @@ namespace ProyectoASPNETGRUPOC.Services
 			_context = context;
 			config = _config;
 		}
-		public Task<string> LoginUsuario(LoginModel login)
+		public async Task<string> LoginUsuario(LoginModel login)
 		{
-			throw new NotImplementedException();
-		}
+            var Usuario = await _context.Usuarios.Include(u => u.Rol)
+                .Where(u => u.User_Name == login.UserName && u.Password == login.Password)
+                .FirstOrDefaultAsync();
+            if (Usuario == null) throw new KeyNotFoundException("Credenciales invalidas");
 
-		public Task Registrar(DtoUsuario dtoUsuario)
-		{
-			throw new NotImplementedException();
-		}
+            string Token = GenerarToken(Usuario);
+            return Token;
+        }
+
+        public async Task Registrar(DtoUsuario dtoUsuario)
+        {
+            if (ExisteUserConEmail(dtoUsuario.Email) || ExiseUserName(dtoUsuario.UserName))
+            {
+                throw new KeyNotFoundException("Ya existe un Usuario con este Email o Correo.");
+            }
+
+            Usuario user = new Usuario()
+            {
+                User_Name = dtoUsuario.UserName,
+                Password = dtoUsuario.Password,
+                Nombre = dtoUsuario.Nombre,
+                Apellido = dtoUsuario.Apellido,
+                Dni = dtoUsuario.Dni,
+                Email = dtoUsuario.Email,
+                Id_Rol = dtoUsuario.Id_Rol, //Id del tipoUsuario por defecto;
+            };
 
 
-		private string GenerarToken(Usuario usuarioEntity)
+            _context.Usuarios.Add(user);
+
+            await _context.SaveChangesAsync();
+        }
+
+
+        private string GenerarToken(Usuario usuarioEntity)
 		{
 			var claims = new[]
 			{
