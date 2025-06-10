@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProyectoASPNETGRUPOC.Interfaces;
 using ProyectoASPNETGRUPOC.Model;
+using ProyectoASPNETGRUPOC.Model.DTO;
 
 namespace ProyectoASPNETGRUPOC.Controllers
 {
