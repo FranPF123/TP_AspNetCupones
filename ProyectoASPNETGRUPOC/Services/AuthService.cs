@@ -23,10 +23,19 @@ namespace ProyectoASPNETGRUPOC.Services
 		}
 		public async Task<string> LoginUsuario(LoginModel login)
 		{
-            var Usuario = await _context.Usuarios.Include(u => u.Rol)
-                .Where(u => u.User_Name == login.UserName && u.Password == login.Password)
-                .FirstOrDefaultAsync();
-            if (Usuario == null) throw new KeyNotFoundException("Credenciales invalidas");
+
+			var Usuario = await _context.Usuarios.Include(u => u.Rol)
+				.Where(u => u.User_Name == login.UserName)
+				.FirstOrDefaultAsync();
+
+			if (Usuario == null) throw new KeyNotFoundException("Credenciales invalidas");
+			
+			bool passwordCorrecta = BCrypt.Net.BCrypt.Verify(login.Password, Usuario.Password);
+			
+			if (!passwordCorrecta)
+			{
+				throw new KeyNotFoundException("Credenciales invalidas");
+			}
 
             string Token = GenerarToken(Usuario);
             return Token;
@@ -38,11 +47,11 @@ namespace ProyectoASPNETGRUPOC.Services
             {
                 throw new KeyNotFoundException("Ya existe un Usuario con este Email o Correo.");
             }
-
+			string passwordhHash = BCrypt.Net.BCrypt.HashPassword(dtoUsuario.Password);
             Usuario user = new Usuario()
             {
                 User_Name = dtoUsuario.UserName,
-                Password = dtoUsuario.Password,
+                Password = passwordhHash,
                 Nombre = dtoUsuario.Nombre,
                 Apellido = dtoUsuario.Apellido,
                 Dni = dtoUsuario.Dni,

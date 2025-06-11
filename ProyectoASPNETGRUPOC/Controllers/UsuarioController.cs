@@ -24,7 +24,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
         {
             try
             {
-                List<Usuario> listaUsuarios = await UServices.GetUsuarios();
+                List<DtoUsuarioMuestra> listaUsuarios = await UServices.GetUsuarios();
 
 
                 return Ok(listaUsuarios);
@@ -64,7 +64,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
 		}
         [HttpGet("UsuariosSegunRol/{id_Rol}")]
         [Authorize(Policy = "ControlUsuarios")]
-        public async Task<IActionResult> GetUsuariosPorRol([FromRoute] int id_Rol)
+        public async Task<IActionResult> GetUsuariosPorRol(int id_Rol)
         {
             try
             {
@@ -102,6 +102,46 @@ namespace ProyectoASPNETGRUPOC.Controllers
             }
 
 
+        }
+        [HttpPut("{UserNameDelUsuarioAEditar}")]
+        [Authorize(Policy = "ControlUsuarios")]
+        public async Task<IActionResult> EditarUsuario(DtoUsuario dtoUsuario, string UserNameDelUsuarioAEditar)
+        {
+            try
+            {
+                if (dtoUsuario == null || UserNameDelUsuarioAEditar == null) return BadRequest("Complete los campos correspondientes");
+                
+                await UServices.EditarUsuario(dtoUsuario, UserNameDelUsuarioAEditar);
+
+                return Ok(new
+                {
+                    Mensaje = "Usuario " + dtoUsuario.UserName + " Editado."
+                });
+
+            }catch(KeyNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpDelete]
+        [Authorize(Policy = "ControlUsuarios")]
+        public async Task<IActionResult> DeleteUsuario(string userName)
+        {
+            try
+            {
+                if (userName == null) return BadRequest("Error: Ingrese el username del usuario a eliminar");
+
+
+                await UServices.EliminarUsuario(userName);
+
+                return Ok(new
+                {
+                    Mensaje = "Usuario: " + userName + " Eliminado."
+                });
+            }catch(KeyNotFoundException ex)
+            {
+                return BadRequest(ex.Message);  
+            }
         }
 
     }
