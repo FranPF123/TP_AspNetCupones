@@ -83,5 +83,77 @@ namespace ProyectoASPNETGRUPOC.Controllers
 
 
 		}
-	}
+
+        [HttpGet("/ObtenerCupones")]
+        [Authorize(Policy = "ControlUsuarios")]
+        public async Task<IActionResult> ObtenerCupones()
+        {
+            try
+            {
+                List<DtoCuponesMuestra> todosLosCupones = await CServices.ObtenerTodosLosCupones();
+
+                return Ok(new
+                {
+                    Mensaje = "Listado completo de cupones",
+                    Cupones = todosLosCupones
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{id}")]
+        [Authorize(Policy = "ControlUsuarios")]
+        public async Task<IActionResult> ModificarCupon(int id, [FromBody] DtoCupones dto)
+        {
+            try
+            {
+                bool resultado = await CServices.ModificarCupon(id, dto);
+                if (!resultado) return NotFound("No se pudo modificar el cupón.");
+
+                return Ok(new
+                {
+                    Mensaje = $"Cupón con ID {id} modificado correctamente"
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("/EliminarCupon/{id}")]
+        [Authorize(Policy = "ControlUsuarios")]
+        public async Task<IActionResult> EliminarCupon(int id)
+        {
+            try
+            {
+                bool resultado = await CServices.EliminarCupon(id);
+                if (!resultado) return NotFound("No se pudo eliminar el cupón.");
+
+                return Ok(new
+                {
+                    Mensaje = $"Cupón con ID {id} fue dado de baja correctamente"
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    }
 }

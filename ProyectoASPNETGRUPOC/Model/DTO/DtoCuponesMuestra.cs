@@ -4,7 +4,8 @@ namespace ProyectoASPNETGRUPOC.Model.DTO
 {
 	public class DtoCuponesMuestra
 	{
-		[Required]
+        public int Id_Cupon { get; set; }
+        [Required]
 		public string Nombre { get; set; }
 		[Required]
 		public string Descripcion { get; set; }
@@ -18,5 +19,6 @@ namespace ProyectoASPNETGRUPOC.Model.DTO
 		public DateTime FechaFinal {  get; set; }
 		[Required]
 		public string NombreTipoCupon { get; set; }
-	}
+        public string Estado { get; set; }
+    }
 }
