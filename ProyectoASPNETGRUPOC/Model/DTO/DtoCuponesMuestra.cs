@@ -2,7 +2,7 @@
 
 namespace ProyectoASPNETGRUPOC.Model.DTO
 {
-	public class DtoCupones
+	public class DtoCuponesMuestra
 	{
 		[Required]
 		public string Nombre { get; set; }
@@ -12,14 +12,11 @@ namespace ProyectoASPNETGRUPOC.Model.DTO
 		public decimal PorcentajeDto { get; set; }
 		[Required]
 		public decimal ImportePromo { get; set; }
-
-		public DateTime FechaInicio { get; set; } = DateTime.Now;
 		[Required]
-
-		public int DiasDuracionDeCupon { get; set; }
+		public DateTime FechaInicio { get; set; }
 		[Required]
-		public int Id_Tipo_Cupon { get; set; }
-
-
+		public DateTime FechaFinal {  get; set; }
+		[Required]
+		public string NombreTipoCupon { get; set; }
 	}
 }

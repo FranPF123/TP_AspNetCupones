@@ -13,4 +13,4 @@ namespace ProyectoASPNETGRUPOC.Model
 		public string Nombre { get; set; }
 	}
 }
-}
+

@@ -1,18 +1,22 @@
-﻿namespace ProyectoASPNETGRUPOC.Model.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ProyectoASPNETGRUPOC.Model.DTO
 {
     public class DtoUsuarioMuestra
     {
-        public string UserName { get; set; }
-        public string Password { get; set; }
-
-        public string Nombre { get; set; }
-
-        public string Apellido { get; set; }
-
-        public string Dni { get; set; }
-
-        public string Email { get; set; }
-
-        public string? tipoUsuario { get; set; }
+		[Required]
+		public string UserName { get; set; }
+		[Required]
+		public string Password { get; set; }
+		[Required]
+		public string Nombre { get; set; }
+		[Required]
+		public string Apellido { get; set; }
+		[Required]
+		public string Dni { get; set; }
+		[Required]
+		public string Email { get; set; }
+		[Required]
+		public string? tipoUsuario { get; set; }
     }
 }

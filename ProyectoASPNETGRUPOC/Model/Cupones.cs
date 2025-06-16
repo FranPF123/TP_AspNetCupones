@@ -8,20 +8,21 @@ namespace ProyectoASPNETGRUPOC.Model
 		[Key]
 		[Column("Id_Cupon")]
 		public int Id_Cupon { get; set; }
-
+		[Required]
 		public string Nombre { get; set; }
-
+		[Required]
 		public string Descripcion { get; set; }
-
+		[Required]
 		public decimal PorcentajeDto { get; set; }
-
+		[Required]
 		public decimal ImportePromo { get; set; }
-
+		[Required]
 		public DateTime FechaInicio { get; set; } = DateTime.Now;
-
+		[Required]
 		public DateTime FechaFin { get; set; }
-
+		[Required]
 		public bool? Activo { get; set; } = true;
+		[Required]
 		public int Id_Tipo_Cupon { get; set; }
 
 
