@@ -15,8 +15,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthServices, AuthServices>();
 builder.Services.AddScoped<IUsuarioServices, UsuarioServices>();
+builder.Services.AddScoped<ICuponesServices, CuponServices>();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CadenaConexion")));
 //base
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

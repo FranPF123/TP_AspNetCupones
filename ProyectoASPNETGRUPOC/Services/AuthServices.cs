@@ -11,12 +11,12 @@ using System.Text;
 
 namespace ProyectoASPNETGRUPOC.Services
 {
-	public class AuthService : IAuthService
+	public class AuthServices : IAuthServices
 	{
 		private readonly ApplicationDbContext _context;
 		private readonly IConfiguration config;
 
-		public AuthService(ApplicationDbContext context, IConfiguration _config)
+		public AuthServices(ApplicationDbContext context, IConfiguration _config)
 		{
 			_context = context;
 			config = _config;

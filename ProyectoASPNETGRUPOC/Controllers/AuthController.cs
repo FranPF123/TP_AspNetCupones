@@ -10,8 +10,8 @@ namespace ProyectoASPNETGRUPOC.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService AServices;
-        public AuthController(IAuthService _AServices)
+        private readonly IAuthServices AServices;
+        public AuthController(IAuthServices _AServices)
         {
             AServices = _AServices;
         }

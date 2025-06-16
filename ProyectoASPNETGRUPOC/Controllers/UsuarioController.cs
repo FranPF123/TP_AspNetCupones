@@ -62,7 +62,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
 				return BadRequest(ex.Message);
 			}
 		}
-        [HttpGet("UsuariosSegunRol/{id_Rol}")]
+        [HttpGet("UsuariosSegunRol/")]
         [Authorize(Policy = "ControlUsuarios")]
         public async Task<IActionResult> GetUsuariosPorRol(int id_Rol)
         {
@@ -78,7 +78,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
             }
         }
 
-        [HttpPost("CrearAdminOAuditor/{IdRol}")]//Solo el admin
+        [HttpPost("CrearAdminOAuditor/")]//Solo el admin
         [Authorize(Policy = "ControlUsuarios")]
         public async Task<IActionResult> PostAdmin(DtoUsuario dtoUsuario, int IdRol)
         {
@@ -103,7 +103,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
 
 
         }
-        [HttpPut("{UserNameDelUsuarioAEditar}")]
+        [HttpPut]
         [Authorize(Policy = "ControlUsuarios")]
         public async Task<IActionResult> EditarUsuario(DtoUsuario dtoUsuario, string UserNameDelUsuarioAEditar)
         {

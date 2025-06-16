@@ -3,7 +3,7 @@ using ProyectoASPNETGRUPOC.Model;
 
 namespace ProyectoASPNETGRUPOC.Interfaces
 {
-    public interface IAuthService
+    public interface IAuthServices
     {
         Task<string> LoginUsuario(LoginModel login);
 
