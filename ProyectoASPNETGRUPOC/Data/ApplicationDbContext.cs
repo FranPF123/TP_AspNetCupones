@@ -9,6 +9,8 @@ namespace ProyectoASPNETGRUPOC.Data
 		public DbSet<Usuario> Usuarios { get; set; }
 		public DbSet<Roles> Roles { get; set; }
 		public DbSet<Cupones> Cupones {  get; set; }
+		public DbSet<Articulos> Articulos { get; set; }
+
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

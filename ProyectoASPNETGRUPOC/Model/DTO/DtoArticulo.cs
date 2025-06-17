@@ -1,0 +1,12 @@
+﻿namespace ProyectoASPNETGRUPOC.Model.DTO
+{
+    public class DtoArticulo
+    {
+        
+        public string Nombre_articulo { get; set; }
+
+        public string Descripcion_articulo { get; set; }
+
+        public decimal Precio { get; set; }
+    }
+}
