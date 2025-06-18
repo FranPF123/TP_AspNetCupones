@@ -7,5 +7,7 @@ namespace ProyectoASPNETGRUPOC.Interfaces
     {
         Task<Articulos> PostArticulo(DtoArticulo dtoArticulo);
         Task<Articulos> PutArticulo(int id, DtoArticulo dtoArticulo);
+        Task<Articulos> DeleteArticulo(int id);
+        Task<List<Articulos>> GetArticulos();
     }
 }

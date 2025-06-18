@@ -15,6 +15,46 @@ namespace ProyectoASPNETGRUPOC.Services
             _context = context;
         }
 
+        public async Task<Articulos> DeleteArticulo(int id)
+        {
+            try
+            {
+                var articulo = await _context.Articulos.FindAsync(id);
+                if (articulo == null || articulo.Activo == false)
+                    throw new Exception("El Articulo indicado no existe o no fue encontrado.");
+
+                articulo.Activo = false;
+
+                _context.Articulos.Update(articulo);
+                await _context.SaveChangesAsync();
+
+                return articulo;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<Articulos>> GetArticulos()
+        {
+
+            try
+            {
+                var articulos = await _context.Articulos
+                    .Include(a => a.Activo == true)
+                    .ToListAsync();
+
+                if (articulos.Any())
+                    return articulos;
+                else
+                    throw new Exception("No se encontraron Articulos.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
         public async Task<Articulos> PostArticulo(DtoArticulo dtoArticulo)
         {
