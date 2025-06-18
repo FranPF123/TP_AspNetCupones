@@ -33,7 +33,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 builder.Services.AddAuthorization(options =>
 {
-	options.AddPolicy("ControlUsuarios", policy =>
+    options.AddPolicy("ControlArticulos", policy =>
+        policy.RequireRole("Admin"));
+
+    options.AddPolicy("ControlUsuarios", policy =>
 		policy.RequireRole("Admin"));
 
 	options.AddPolicy("Clientes", policy =>

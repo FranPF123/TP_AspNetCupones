@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ProyectoASPNETGRUPOC.Interfaces;
@@ -19,6 +20,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "ControlArticulos")]
         public async Task<IActionResult> PostArticulo(DtoArticulo dtoArticulo)
         {
             try
@@ -40,6 +42,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
         }
 
         [HttpPut]
+        [Authorize(Policy = "ControlArticulos")]
         public async Task<IActionResult> PutArticulo(int id, DtoArticulo dtoArticulo)
         {
             try
