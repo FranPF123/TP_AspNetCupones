@@ -17,7 +17,40 @@ namespace ProyectoASPNETGRUPOC.Controllers
 			CServices = cServices;
 		}
 
-		[HttpPost]
+        [HttpPost("/Cupones/{idCupon}/AsociarArticulo")]
+
+        public async Task<IActionResult> AsignarCuponAArticulo(int idCupon, DtoCuponDetalle cuponDetalle)
+        {
+            try
+            {
+                if (cuponDetalle == null) return BadRequest("Debes asignar el id del articulo y la cantidad");
+
+
+
+                var cupDetalles = await CServices.AsignarCuponAArticulo(idCupon, cuponDetalle);
+
+                return Ok("Cupon: " + cupDetalles.Cupon.Nombre + " Asignado a articulo:" + cupDetalles.Articulos.Nombre_articulo + " ");
+            }
+            catch (Exception ex) { 
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("/Cupones/{idCupon}/Articulos")]
+        public async Task<IActionResult> ObtenerArticulonesDeCupon(int idCupon)
+        {
+            try
+            {
+                DtoCuponConArticulos cuponConArticulos = await CServices.ObtenerCuponConArticulos(idCupon);
+
+                return Ok(cuponConArticulos);
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+		[HttpPost("/CrearCupon")]
 		[Authorize(Policy = "ControlUsuarios")]
 		public async Task<IActionResult> CrearCupon(DtoCupones dtoCupones)
 		{
@@ -62,7 +95,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
 			}
 		}
 		[HttpGet("/ObtenerCuponesDisponibles")]
-		[Authorize(Policy = "ControlUsuarios")]
+		[Authorize]
 		public async Task<IActionResult> ObtenerCuponesDisponibles()
 		{
 			try

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using ProyectoASPNETGRUPOC.Data;
 using ProyectoASPNETGRUPOC.Interfaces;
 using ProyectoASPNETGRUPOC.Model;
@@ -9,20 +10,24 @@ namespace ProyectoASPNETGRUPOC.Services
 	public class CuponServices : ICuponesServices
 	{
 		public readonly ApplicationDbContext _context;
+		public readonly IArticuloService ArtService;
 
-		public CuponServices(ApplicationDbContext context)
+		public CuponServices(ApplicationDbContext context, IArticuloService artService)
 		{
 			_context = context;
+			ArtService = artService;
 		}
 		//Crear Cupones
 		public async Task CrearCupones(DtoCupones dtoCupones)
 		{
-			if (existeNombreCupon(dtoCupones.Nombre) || dtoCupones.DiasDuracionDeCupon <= 0)
+			if (await existeNombreCupon(dtoCupones.Nombre) || dtoCupones.DiasDuracionDeCupon <= 0)
 			{
 				throw new KeyNotFoundException("Ya existe un cupon con este Nombre.");
 			}
 			DateTime FechaFin = CalcularFechaFinPorDias(dtoCupones);
-
+			
+			
+			await ValidacionPorRoles(dtoCupones);
 
 
 			Cupones cupon = new Cupones()
@@ -117,7 +122,7 @@ namespace ProyectoASPNETGRUPOC.Services
             if (cupon == null || cupon.Activo == false)
                 throw new KeyNotFoundException($"No se encontró un cupón activo con ID {id}");
 
-            if (existeNombreCupon(dtoCupones.Nombre) && dtoCupones.Nombre != cupon.Nombre)
+            if (await existeNombreCupon(dtoCupones.Nombre) && dtoCupones.Nombre != cupon.Nombre)
                 throw new Exception("Ya existe otro cupón con ese nombre.");
 
             cupon.Nombre = dtoCupones.Nombre;
@@ -148,20 +153,40 @@ namespace ProyectoASPNETGRUPOC.Services
             return true;
         }
 
-
-
-        public bool existeCuponId(int idCupon)
+		public async Task ValidacionPorRoles(DtoCupones dtoCupon)
 		{
-			var CuponPorId = _context.Cupones.Where(c => c.Id_Cupon == idCupon && c.Activo == true).FirstOrDefault();
+			TipoCupon tipo = await _context.Tipo_Cupon.FindAsync(dtoCupon.Id_Tipo_Cupon);
+			if (tipo == null) throw new Exception("Tipo de cupon no valido");
+
+
+			// Validaciones según el tipo
+			if (tipo.Nombre == "Porcentaje")
+			{
+				if (dtoCupon.PorcentajeDto == null || dtoCupon.PorcentajeDto <= 0)
+					throw new Exception("Debe ingresar un porcentaje mayor a cero.");
+				//if (dtoCupon.ImportePromo != null) throw new Exception("No debe ingresar un monto si el tipo es porcentaje.");
+			}
+			else if (tipo.Nombre == "Monto")
+			{
+				if (dtoCupon.ImportePromo == null || dtoCupon.ImportePromo <= 0)
+					throw new Exception("Debe ingresar un monto mayor a cero.");
+				// if (dtoCupon.PorcentajeDto != null) throw new Exception("No debe ingresar un porcentaje si el tipo es monto.");
+			}
+		}
+
+
+        public async Task<bool> existeCuponId(int idCupon)
+		{
+			var CuponPorId = await _context.Cupones.Where(c => c.Id_Cupon == idCupon && c.Activo == true).FirstOrDefaultAsync();
 
 			if (CuponPorId == null) return false;
 
 			return true;
 		}
 
-		public bool existeNombreCupon(string Nombre)
+		public async Task<bool> existeNombreCupon(string Nombre)
 		{
-			var Cupon = _context.Cupones.Where(c => c.Nombre == Nombre && c.Activo == true).FirstOrDefault();
+			var Cupon = await _context.Cupones.Where(c => c.Nombre == Nombre && c.Activo == true).FirstOrDefaultAsync();
 
 			if (Cupon == null) return false;
 
@@ -181,7 +206,65 @@ namespace ProyectoASPNETGRUPOC.Services
 			return fechaFin;
 		}
 
+		public async Task<CuponesDetalle> AsignarCuponAArticulo(int idCupon, DtoCuponDetalle dtoCuponDetalle)
+		{
+			if (! await existeCuponId(idCupon))
+			{
+				throw new KeyNotFoundException("NO existe un cupon con este ID.");
+			}
+			//await _context.Cupones_Detalle.Where(cd => cd.Id_Cupon == idCupon && cd.Id_Articulo == dtoCuponDetalle.Id_Articulo).FirstOrDefaultAsync();
 
+			if (!await ArtService.existeArticuloId(dtoCuponDetalle.Id_Articulo))
+			{
+				throw new KeyNotFoundException("NO existe un Articulo con este ID.");
+			}
 
+			if (await ArtService.precioDeArticulo(dtoCuponDetalle.Id_Articulo))
+			{
+				throw new KeyNotFoundException("No se puede asignar un articulo con precio igual a cero a un cupon.");
+			}
+
+			CuponesDetalle CuponDetalle = new CuponesDetalle()
+			{
+				Id_Cupon = idCupon,
+				Id_Articulo = dtoCuponDetalle.Id_Articulo,
+				cantidad = dtoCuponDetalle.cantidad
+			};
+
+			_context.Cupones_Detalle.Add(CuponDetalle);
+
+			await _context.SaveChangesAsync();
+			CuponesDetalle cuponDetalle = await _context.Cupones_Detalle.Where(cd => cd.Id_Cupon == idCupon && cd.Id_Articulo == dtoCuponDetalle.Id_Articulo).FirstOrDefaultAsync();
+			return cuponDetalle;
+		}
+
+		public async Task<DtoCuponConArticulos> ObtenerCuponConArticulos(int idCupon)
+		{
+			if (!await existeCuponId(idCupon))
+			{
+				throw new Exception("No existe un cupon con este id.");
+			}
+
+			DtoCuponConArticulos? CuponConArticulos = await _context.Cupones.Where(c => c.Id_Cupon == idCupon).Select(c => new DtoCuponConArticulos
+			{
+				Id_Cupon = c.Id_Cupon,
+				nombreCupon = c.Nombre,
+				ArticulosAsociados = c.CuponesDetalles.Select(cd =>	 new DtoArticuloMuestra
+				{
+					Nombre_articulo = cd.Articulos.Nombre_articulo,
+					Descripcion_articulo = cd.Articulos.Descripcion_articulo,
+					Precio = cd.Articulos.Precio,
+					cantidad = cd.cantidad
+				}).ToList()
+			}).FirstOrDefaultAsync();
+
+			if (!CuponConArticulos.ArticulosAsociados.Any())
+			{
+				throw new Exception("Este cupon no tiene ningun Articulo Asociado");
+			}
+			return CuponConArticulos;
+		}
 	}
+
+
 }

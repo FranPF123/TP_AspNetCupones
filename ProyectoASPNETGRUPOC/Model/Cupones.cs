@@ -13,9 +13,9 @@ namespace ProyectoASPNETGRUPOC.Model
 		[Required]
 		public string Descripcion { get; set; }
 		[Required]
-		public decimal PorcentajeDto { get; set; }
+		public decimal? PorcentajeDto { get; set; } = 0;
 		[Required]
-		public decimal ImportePromo { get; set; }
+		public decimal? ImportePromo { get; set; } = 0;
 		[Required]
 		public DateTime FechaInicio { get; set; } = DateTime.Now;
 		[Required]
@@ -31,5 +31,8 @@ namespace ProyectoASPNETGRUPOC.Model
 		public virtual TipoCupon? TipoCupon { get; set; }
 		[ForeignKey("Id_Cupon")]
 		public ICollection<CuponesDetalle>? CuponesDetalles { get; set; }
+
+
+
 	}
 }

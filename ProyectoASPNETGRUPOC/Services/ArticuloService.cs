@@ -42,7 +42,7 @@ namespace ProyectoASPNETGRUPOC.Services
             try
             {
                 var articulos = await _context.Articulos
-                    .Include(a => a.Activo == true)
+                    .Where(a => a.Activo == true)
                     .ToListAsync();
 
                 if (articulos.Any())
@@ -60,7 +60,7 @@ namespace ProyectoASPNETGRUPOC.Services
         {
             try
             {
-                Articulos articuloEntity = await _context.Articulos
+                Articulos? articuloEntity = await _context.Articulos
                     .FirstOrDefaultAsync(a => a.Nombre_articulo == dtoArticulo.Nombre_articulo);
 
                 if (articuloEntity is not null)
@@ -114,5 +114,24 @@ namespace ProyectoASPNETGRUPOC.Services
                 throw new Exception(ex.Message);
             }
         }
-    }
+
+		public async Task<bool> existeArticuloId(int idArticulo)
+		{
+			var ArticuloPorId = await _context.Articulos.Where(a => a.Id_Articulo == idArticulo && a.Activo == true).FirstOrDefaultAsync();
+
+			if (ArticuloPorId == null) return false;
+
+			return true;
+		}
+
+		public async Task<bool> precioDeArticulo(int idArticulo)
+		{
+			var ArticuloPrecio = await _context.Articulos.Where(a => a.Id_Articulo == idArticulo).FirstOrDefaultAsync();
+
+            if (ArticuloPrecio.Precio <= 0) return true;
+
+            return false;
+
+		}
+	}
 }

@@ -43,7 +43,7 @@ namespace ProyectoASPNETGRUPOC.Services
 
         public async Task Registrar(DtoUsuario dtoUsuario)
         {
-            if (ExisteUserConEmail(dtoUsuario.Email) || ExiseUserName(dtoUsuario.UserName))
+            if (await ExisteUserConEmail(dtoUsuario.Email) || await ExiseUserName(dtoUsuario.UserName))
             {
                 throw new KeyNotFoundException("Ya existe un Usuario con este Email o Correo.");
             }
@@ -89,7 +89,7 @@ namespace ProyectoASPNETGRUPOC.Services
 		}
 
 
-		private bool ExisteUserConEmail(string Email)
+		private async Task<bool> ExisteUserConEmail(string Email)
 		{
 			var User = _context.Usuarios.Where(u => u.Email == Email).FirstOrDefault();
 			if (User == null) return false;
@@ -97,7 +97,7 @@ namespace ProyectoASPNETGRUPOC.Services
 		}
 
 
-		private bool ExiseUserName(string UserName)
+		private async Task<bool> ExiseUserName(string UserName)
 		{
 			var User = _context.Usuarios.Where(u => u.User_Name == UserName).FirstOrDefault();
 

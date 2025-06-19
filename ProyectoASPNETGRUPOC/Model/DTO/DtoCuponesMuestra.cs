@@ -10,9 +10,9 @@ namespace ProyectoASPNETGRUPOC.Model.DTO
 		[Required]
 		public string Descripcion { get; set; }
 		[Required]
-		public decimal PorcentajeDto { get; set; }
+		public decimal? PorcentajeDto { get; set; }
 		[Required]
-		public decimal ImportePromo { get; set; }
+		public decimal? ImportePromo { get; set; }
 		[Required]
 		public DateTime FechaInicio { get; set; }
 		[Required]

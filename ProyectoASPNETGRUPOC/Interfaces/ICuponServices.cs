@@ -6,6 +6,9 @@ namespace ProyectoASPNETGRUPOC.Interfaces
 	public interface ICuponesServices
 	{
 		Task CrearCupones(DtoCupones dtoCupones);
+		Task<CuponesDetalle> AsignarCuponAArticulo(int idCupon, DtoCuponDetalle dtoCuponDetalle);
+
+		Task<DtoCuponConArticulos> ObtenerCuponConArticulos(int idCupon);
 		Task<DtoCuponesMuestra> GetCuponPorId(int idCupones);
 		Task<List<DtoCuponesMuestra>> ListaDeCuponesActivos();
         Task<List<DtoCuponesMuestra>> ObtenerTodosLosCupones();
@@ -13,9 +16,9 @@ namespace ProyectoASPNETGRUPOC.Interfaces
         Task<bool> ModificarCupon(int id, DtoCupones dtoCupones);
         Task<bool> EliminarCupon(int id);
         //Validaciones
-        bool existeCuponId(int idCupon);
+        Task<bool> existeCuponId(int idCupon);
 
-		bool existeNombreCupon(string Nombre);
+		Task<bool> existeNombreCupon(string Nombre);
 
 		DateTime CalcularFechaFinPorDias(DtoCupones dtoCupon);
 

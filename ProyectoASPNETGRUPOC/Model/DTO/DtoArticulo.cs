@@ -7,6 +7,7 @@
 
         public string Descripcion_articulo { get; set; }
 
-        public decimal Precio { get; set; }
-    }
+        public decimal Precio { get; set; } = 0.0M;
+
+	}
 }

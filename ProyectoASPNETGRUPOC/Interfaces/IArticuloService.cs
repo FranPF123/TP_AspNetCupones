@@ -9,5 +9,9 @@ namespace ProyectoASPNETGRUPOC.Interfaces
         Task<Articulos> PutArticulo(int id, DtoArticulo dtoArticulo);
         Task<Articulos> DeleteArticulo(int id);
         Task<List<Articulos>> GetArticulos();
+
+        Task<bool> existeArticuloId(int idaArticulo);
+
+        Task<bool> precioDeArticulo(int idArticulo);
     }
 }
