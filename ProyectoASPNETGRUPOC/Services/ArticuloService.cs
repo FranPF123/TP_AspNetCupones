@@ -42,7 +42,7 @@ namespace ProyectoASPNETGRUPOC.Services
             try
             {
                 var articulos = await _context.Articulos
-                    .Include(a => a.Activo == true)
+                    .Where(a => a.Activo == true)
                     .ToListAsync();
 
                 if (articulos.Any())
