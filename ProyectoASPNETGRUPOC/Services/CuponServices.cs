@@ -264,7 +264,62 @@ namespace ProyectoASPNETGRUPOC.Services
 			}
 			return CuponConArticulos;
 		}
-	}
+
+
+
+        public async Task<DtoCuponesMuestra> ReclamarCupon(int idCupon, int idUsuario)
+        {
+            try
+            {
+                var cupon = await _context.Cupones
+			    .Include(c => c.TipoCupon)
+				.FirstOrDefaultAsync(c => c.Id_Cupon == idCupon
+					&& c.Activo == true
+					&& c.FechaInicio <= DateTime.Now
+					&& c.FechaFin >= DateTime.Now);
+
+                if (cupon == null)
+                    throw new Exception("El cupón no existe o está inactivo.");
+
+                //para verificar si el cupon esta recalmado
+                var yaReclamado = await _context.Cupones_Clientes
+                    .AnyAsync(cc => cc.Id_Cupon == idCupon && cc.Id_Usuario == idUsuario);
+
+                if (yaReclamado)
+                    throw new Exception("Este cupón ya fue reclamado por el usuario.");
+
+
+                var nuevoRegistro = new CuponesClientes
+                {
+                    Id_Cupon = idCupon,
+                    Id_Usuario = idUsuario,
+                    FechaAsignado = DateTime.Now
+                };
+
+                _context.Cupones_Clientes.Add(nuevoRegistro);
+                await _context.SaveChangesAsync();
+
+                return new DtoCuponesMuestra
+                {
+                    Id_Cupon = cupon.Id_Cupon,
+                    Nombre = cupon.Nombre,
+                    Descripcion = cupon.Descripcion,
+                    PorcentajeDto = cupon.PorcentajeDto,
+                    ImportePromo = cupon.ImportePromo,
+                    FechaInicio = cupon.FechaInicio,
+                    FechaFinal = cupon.FechaFin,
+                    NombreTipoCupon = cupon.TipoCupon.Nombre,
+                    Estado = "Reclamado"
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al reclamar cupón: {ex.Message}");
+            }
+        }
+
+
+    }
 
 
 }

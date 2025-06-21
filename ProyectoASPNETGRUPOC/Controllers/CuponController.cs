@@ -188,5 +188,29 @@ namespace ProyectoASPNETGRUPOC.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("/ReclamarCupon/{idCupon}")]
+        [Authorize(Policy = "Clientes")]
+        public async Task<IActionResult> ReclamarCupon(int idCupon, int idUsuario)
+        {
+            try
+            {
+                var reclamo = await CServices
+                    .ReclamarCupon(idCupon, idUsuario);
+
+                if (reclamo == null) return NotFound("Error al reclamar el cupon");
+
+
+                return Ok(new
+                {
+                    Mensaje = "El cupon fue reclamado con exito"
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }
