@@ -6,8 +6,7 @@ namespace ProyectoASPNETGRUPOC.Model
     [Table("Cupones_Clientes")]
     public class CuponesClientes
     {
-        [Key]
-        [Column(Order = 0)]
+
         public int Id_Cupon { get; set; }
 
         [Required]
@@ -16,8 +15,7 @@ namespace ProyectoASPNETGRUPOC.Model
         [Required]
         public DateTime FechaAsignado { get; set; }
 
-        [Key]
-        [Column(Order = 1)]
+
         public int Id_Usuario { get; set; }
 
         // Relaciones de navegación

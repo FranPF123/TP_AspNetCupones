@@ -266,34 +266,43 @@ namespace ProyectoASPNETGRUPOC.Services
 		}
 
 
-
+        //Reclamar Cupon y generar nroCupon
         public async Task<DtoCuponesMuestra> ReclamarCupon(int idCupon, int idUsuario)
         {
             try
             {
                 var cupon = await _context.Cupones
-			    .Include(c => c.TipoCupon)
-				.FirstOrDefaultAsync(c => c.Id_Cupon == idCupon
-					&& c.Activo == true
-					&& c.FechaInicio <= DateTime.Now
-					&& c.FechaFin >= DateTime.Now);
+                    .Include(c => c.TipoCupon)
+                    .FirstOrDefaultAsync(c =>
+                        c.Id_Cupon == idCupon &&
+                        c.Activo == true &&
+                        c.FechaInicio <= DateTime.Now &&
+                        c.FechaFin >= DateTime.Now);
 
                 if (cupon == null)
-                    throw new Exception("El cupón no existe o está inactivo.");
+                    throw new Exception("El cupon no existe o está inactivo o fuera de fecha");
 
-                //para verificar si el cupon esta recalmado
                 var yaReclamado = await _context.Cupones_Clientes
                     .AnyAsync(cc => cc.Id_Cupon == idCupon && cc.Id_Usuario == idUsuario);
 
+                // verificar si ya fue reclamado por el cliente
                 if (yaReclamado)
-                    throw new Exception("Este cupón ya fue reclamado por el usuario.");
+                    throw new Exception("Este cupón ya fue reclamado por el usuario");
 
+                // Generar nroCupon 123-456-789
+                string nuevoNroCupon;
+                do
+                {
+                    nuevoNroCupon = GenerarNroCuponAleatorio();
+                }
+                while (await _context.Cupones_Clientes.AnyAsync(cc => cc.NroCupon == nuevoNroCupon));
 
                 var nuevoRegistro = new CuponesClientes
                 {
                     Id_Cupon = idCupon,
                     Id_Usuario = idUsuario,
-                    FechaAsignado = DateTime.Now
+                    FechaAsignado = DateTime.Now,
+                    NroCupon = nuevoNroCupon
                 };
 
                 _context.Cupones_Clientes.Add(nuevoRegistro);
@@ -314,9 +323,105 @@ namespace ProyectoASPNETGRUPOC.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error al reclamar cupón: {ex.Message}");
+                throw new Exception($"Error al reclamar cupon: {ex.Message}");
             }
         }
+
+        //Generar numeros randoms del 100 al 999
+        private string GenerarNroCuponAleatorio()
+        {
+            var random = new Random();
+            int parte1 = random.Next(100, 999);
+            int parte2 = random.Next(100, 999);
+            int parte3 = random.Next(100, 999);
+            return $"{parte1}-{parte2}-{parte3}";
+        }
+
+        // ver lista de cupones reclamados
+        public async Task<List<DtoCuponesClientes>> ObtenerCuponesDelCliente(int idUsuario)
+        {
+            var cupones = await _context.Cupones_Clientes
+                .Include(cc => cc.Cupon)
+                .ThenInclude(c => c.TipoCupon)
+                .Where(cc => cc.Id_Usuario == idUsuario)
+                .Select(cc => new DtoCuponesClientes
+                {
+                    NroCupon = cc.NroCupon,
+                    NombreCupon = cc.Cupon.Nombre,
+                    Descripcion = cc.Cupon.Descripcion,
+                    FechaAsignado = cc.FechaAsignado,
+                    FechaInicio = cc.Cupon.FechaInicio,
+                    FechaFin = cc.Cupon.FechaFin,
+                    PorcentajeDto = cc.Cupon.PorcentajeDto,
+                    ImportePromo = cc.Cupon.ImportePromo,
+                    TipoCupon = cc.Cupon.TipoCupon.Nombre,
+                    Estado = cc.Cupon.Activo == true ? "Activo" : "Inactivo"
+                })
+                .ToListAsync();
+
+            if (!cupones.Any())
+                throw new Exception("El usuario no tiene cupones reclamados");
+
+            return cupones;
+        }
+
+        //Quemar el Cupon
+        public async Task<bool> UsarCuponReclamado(int idUsuario, string nroCupon)
+        {
+            var cuponReclamado = await _context.Cupones_Clientes
+                .Include(cc => cc.Cupon)
+                .FirstOrDefaultAsync(cc => cc.NroCupon == nroCupon && cc.Id_Usuario == idUsuario);
+
+            if (cuponReclamado == null)
+                throw new Exception("El cupón no está asignado al usuario o ya fue utilizado");
+
+            var cupon = cuponReclamado.Cupon;
+
+            // Validaciones
+            if (!cupon.Activo ?? false)
+                throw new Exception("El cupón no está activo");
+
+            if (cupon.FechaInicio > DateTime.Now || cupon.FechaFin < DateTime.Now)
+                throw new Exception("El cupón no está en un rango de fechas válido");
+
+            // Crear historial
+            var historial = new CuponesHistorial
+            {
+                NroCupon = cuponReclamado.NroCupon,
+                Id_Usuario = idUsuario,
+                FechaUso = DateTime.Now
+            };
+
+            // Eliminar de Cupones_Clientes
+            _context.Cupones_Clientes.Remove(cuponReclamado);
+
+            // Agregar al historial
+            _context.Cupones_Historial.Add(historial);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        //ver Historial de Cupones
+        public async Task<List<DtoHistorialCupon>> ObtenerHistorialDeCupones(int idUsuario)
+        {
+            var historial = await _context.Cupones_Historial
+                .Where(ch => ch.Id_Usuario == idUsuario)
+                .OrderByDescending(ch => ch.FechaUso)
+                .Select(ch => new DtoHistorialCupon
+                {
+                    NroCupon = ch.NroCupon,
+                    FechaUso = ch.FechaUso
+                })
+                .ToListAsync();
+
+            if (!historial.Any())
+                throw new Exception("El usuario no tiene cupones utilizados");
+
+            return historial;
+        }
+
 
 
     }

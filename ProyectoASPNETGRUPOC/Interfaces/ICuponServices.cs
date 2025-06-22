@@ -23,6 +23,9 @@ namespace ProyectoASPNETGRUPOC.Interfaces
 		DateTime CalcularFechaFinPorDias(DtoCupones dtoCupon);
 
 		Task<DtoCuponesMuestra> ReclamarCupon(int idCupon, int idUsuario);
+		Task<List<DtoCuponesClientes>> ObtenerCuponesDelCliente(int idUsuario);
+		Task<bool> UsarCuponReclamado(int idUsuario, string nroCupon);
+		Task<List<DtoHistorialCupon>> ObtenerHistorialDeCupones(int idUsuario);
 
 
     }

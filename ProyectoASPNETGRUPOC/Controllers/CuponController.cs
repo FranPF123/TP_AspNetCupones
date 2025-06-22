@@ -189,6 +189,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
             }
         }
 
+        //Reclamar el cupon
         [HttpPost("/ReclamarCupon/{idCupon}")]
         [Authorize(Policy = "Clientes")]
         public async Task<IActionResult> ReclamarCupon(int idCupon, int idUsuario)
@@ -209,6 +210,67 @@ namespace ProyectoASPNETGRUPOC.Controllers
             catch(Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        //VerCupones del cliente
+        [HttpGet("cupones-del-cliente/{idUsuario}")]
+        [Authorize]
+        public async Task<IActionResult> GetCuponesDelCliente(int idUsuario)
+        {
+            try
+            {
+                var lista = await CServices.ObtenerCuponesDelCliente(idUsuario);
+
+                return Ok(new
+                {
+                    Mensaje = "Cupones reclamados por el usuario",
+                    Cupones = lista
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+        }
+        //Quemar el Cupon
+        [HttpPost("usar-cupon")]
+        [Authorize]
+        public async Task<IActionResult> UsarCupon(string nroCupon, int idUsuario)
+        {
+            try
+            {
+                var resultado = await CServices.UsarCuponReclamado(idUsuario, nroCupon);
+
+                return Ok(new
+                {
+                    Mensaje = $"El cupón {nroCupon} fue utilizado correctamente."
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+        }
+
+        //ver historial de cupones usados
+        [HttpGet("historial-cupones-usados/{idUsuario}")]
+        [Authorize]
+        public async Task<IActionResult> HistorialCupones(int idUsuario)
+        {
+            try
+            {
+                var historial = await CServices.ObtenerHistorialDeCupones(idUsuario);
+
+                return Ok(new
+                {
+                    Mensaje = $"Historial de cupones utilizados por el usuario {idUsuario}",
+                    Historial = historial
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
             }
         }
 
