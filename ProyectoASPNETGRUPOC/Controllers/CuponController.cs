@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProyectoASPNETGRUPOC.Interfaces;
 using ProyectoASPNETGRUPOC.Model.DTO;
+using ProyectoASPNETGRUPOC.Services;
 
 namespace ProyectoASPNETGRUPOC.Controllers
 {
@@ -10,12 +11,16 @@ namespace ProyectoASPNETGRUPOC.Controllers
 	[ApiController]
 	public class CuponController : ControllerBase
 	{
-		public readonly ICuponesServices CServices;
+		private readonly ICuponesServices CServices;
+        private readonly IUsuarioServices UsuarioServices;
+        private readonly IEmailService _emailService;
 
-		public CuponController(ICuponesServices cServices)
-		{
+        public CuponController(ICuponesServices cServices, UsuarioServices usuarioServices, IEmailService emailService)
+        {
 			CServices = cServices;
-		}
+            UsuarioServices = usuarioServices;
+            _emailService = emailService;
+        }
 
         [HttpPost("/Cupones/{idCupon}/AsociarArticulo")]
 
@@ -201,6 +206,22 @@ namespace ProyectoASPNETGRUPOC.Controllers
 
                 if (reclamo == null) return NotFound("Error al reclamar el cupon");
 
+                var usuario = await UsuarioServices.obtenerDatosDeUsuarioLogeado(idUsuario);
+                var cupon = await CServices.GetCuponPorId(idCupon);
+
+                var body = $@"
+                <h2>¡Cupón reclamado exitosamente!</h2>
+                <p>Hola {usuario.Nombre} {usuario.Apellido},</p>
+                <p>Has reclamado el siguiente cupón:</p>
+                <ul>
+                <li><strong>Nombre:</strong> {cupon.Nombre}</li>
+                <li><strong>Descripción:</strong> {cupon.Descripcion}</li>
+                <li><strong>Válido desde:</strong> {cupon.FechaInicio.ToShortDateString()}</li>
+                <li><strong>Válido hasta:</strong> {cupon.FechaFinal.ToShortDateString()}</li>
+                <li><strong>Tipo:</strong> {cupon.NombreTipoCupon}</li>
+                </ul>
+                ";
+                await _emailService.SendEmail(usuario.Email, "Cupón reclamado con éxito", body);
 
                 return Ok(new
                 {
@@ -212,6 +233,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         //VerCupones del cliente
         [HttpGet("cupones-del-cliente/{idUsuario}")]
