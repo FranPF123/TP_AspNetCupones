@@ -455,7 +455,19 @@ namespace ProyectoASPNETGRUPOC.Services
             return reporte;
         }
 
+        public async Task<List<DtoCuponesReclamados>> ObtenerCuponesMasReclamados()
+        {
+            var resultado = await _context.Cupones_Clientes.GroupBy(cc => cc.Id_Cupon).Select(group => new DtoCuponesReclamados
+        {
+            Id_Cupon = group.Key,
+            NombreDelCupon = group.First().Cupon.Nombre,
+            CantidadReclamaciones = group.Count()
+        })
+        .OrderByDescending(c => c.CantidadReclamaciones)
+        .ToListAsync();
 
+            return resultado;
+        }
     }
 
 

@@ -29,7 +29,7 @@ namespace ProyectoASPNETGRUPOC.Interfaces
 		//Reportes
         Task<List<DtoReporteCuponesUsados>> ReporteCuponesMasUsados();
         Task<List<DtoReporteCuponesUsados>> ReporteCuponesUsadosPorFechas(DateTime desde, DateTime hasta);
-
+        Task<List<DtoCuponesReclamados>> ObtenerCuponesMasReclamados();
 
 
     }

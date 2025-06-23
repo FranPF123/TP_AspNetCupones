@@ -312,6 +312,24 @@ namespace ProyectoASPNETGRUPOC.Controllers
             return Ok(resultado);
         }
 
+        [HttpGet("reporte/mas-reclamados")]
+        [Authorize(Policy = "Auditor")]
+        public async Task<IActionResult> ReporteCuponesMasReclamados()
+        {
+            try
+            {
+                var resultado = await CServices.ObtenerCuponesMasReclamados();
+                return Ok(new
+                {
+                    Mensaje = "Estos fueron los cupones mas reclamados este mes:",
+                    Cupones = resultado
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+        }
 
     }
 }
