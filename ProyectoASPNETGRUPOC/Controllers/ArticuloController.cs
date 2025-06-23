@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using ProyectoASPNETGRUPOC.Interfaces;
 using ProyectoASPNETGRUPOC.Model;
 using ProyectoASPNETGRUPOC.Model.DTO;
@@ -95,6 +96,29 @@ namespace ProyectoASPNETGRUPOC.Controllers
             {
                 return BadRequest(ex.Message);
             }
+
+
+
         }
+
+        //REPORTE
+        [HttpGet("Reporte/ArticulosMasUsados")]
+        [Authorize(Policy = "ControlArticulos")]
+        public async Task<IActionResult> ArticulosMasUsados()
+        {
+            try
+            {
+                var reporte = await _articuloService
+                    .ArticulosMasUsados();
+
+                return Ok(reporte);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
     }
 }
