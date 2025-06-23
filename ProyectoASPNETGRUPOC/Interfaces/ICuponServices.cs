@@ -26,6 +26,10 @@ namespace ProyectoASPNETGRUPOC.Interfaces
 		Task<List<DtoCuponesClientes>> ObtenerCuponesDelCliente(int idUsuario);
 		Task<bool> UsarCuponReclamado(int idUsuario, string nroCupon);
 		Task<List<DtoHistorialCupon>> ObtenerHistorialDeCupones(int idUsuario);
+		//Reportes
+        Task<List<DtoReporteCuponesUsados>> ReporteCuponesMasUsados();
+        Task<List<DtoReporteCuponesUsados>> ReporteCuponesUsadosPorFechas(DateTime desde, DateTime hasta);
+
 
 
     }

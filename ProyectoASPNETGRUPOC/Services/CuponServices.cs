@@ -4,6 +4,7 @@ using ProyectoASPNETGRUPOC.Data;
 using ProyectoASPNETGRUPOC.Interfaces;
 using ProyectoASPNETGRUPOC.Model;
 using ProyectoASPNETGRUPOC.Model.DTO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ProyectoASPNETGRUPOC.Services
 {
@@ -422,6 +423,37 @@ namespace ProyectoASPNETGRUPOC.Services
             return historial;
         }
 
+        //REPORTES 
+        public async Task<List<DtoReporteCuponesUsados>> ReporteCuponesMasUsados()
+        {
+            var reporte = await _context.Cupones_Historial
+                .GroupBy(h => h.NroCupon)
+                .Select(g => new DtoReporteCuponesUsados
+                {
+                    NroCupon = g.Key,
+                    CantidadUsos = g.Count()
+                })
+                .OrderByDescending(r => r.CantidadUsos)
+                .ToListAsync();
+
+            return reporte;
+        }
+
+        public async Task<List<DtoReporteCuponesUsados>> ReporteCuponesUsadosPorFechas(DateTime desde, DateTime hasta)
+        {
+            var reporte = await _context.Cupones_Historial
+                .Where(h => h.FechaUso >= desde && h.FechaUso <= hasta)
+                .GroupBy(h => h.NroCupon)
+                .Select(g => new DtoReporteCuponesUsados
+                {
+                    NroCupon = g.Key,
+                    CantidadUsos = g.Count()
+                })
+                .OrderByDescending(r => r.CantidadUsos)
+                .ToListAsync();
+
+            return reporte;
+        }
 
 
     }

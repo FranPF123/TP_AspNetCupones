@@ -296,5 +296,22 @@ namespace ProyectoASPNETGRUPOC.Controllers
             }
         }
 
+        [HttpGet("reporte/mas-usados")]
+        [Authorize(Policy = "Auditor")]
+        public async Task<IActionResult> ReporteCuponesMasUsados()
+        {
+            var resultado = await CServices.ReporteCuponesMasUsados();
+            return Ok(resultado);
+        }
+
+        [HttpGet("reporte/usados-por-fechas")]
+        [Authorize(Policy = "Auditor")]
+        public async Task<IActionResult> ReporteCuponesPorFechas(DateTime desde, DateTime hasta)
+        {
+            var resultado = await CServices.ReporteCuponesUsadosPorFechas(desde, hasta);
+            return Ok(resultado);
+        }
+
+
     }
 }
