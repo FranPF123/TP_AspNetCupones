@@ -52,7 +52,8 @@ namespace ProyectoASPNETGRUPOC.Services
 		//5.Debe haber una lista de cupones activos y que se encuentren en el rango de fechas de uso
 		public async Task<List<DtoCuponesMuestra>> ListaDeCuponesActivos()
 		{
-			List<DtoCuponesMuestra> ListaDeCuponesActivos = await _context.Cupones.Include(c => c.TipoCupon).Where(c => c.FechaInicio < c.FechaFin && c.Activo == true).Select(c => new DtoCuponesMuestra
+            DateTime FechaActual = DateTime.Now;
+			List<DtoCuponesMuestra> ListaDeCuponesActivos = await _context.Cupones.Include(c => c.TipoCupon).Where(c => FechaActual < c.FechaFin && c.Activo == true).Select(c => new DtoCuponesMuestra
 			{
                 Id_Cupon = c.Id_Cupon,
                 Nombre = c.Nombre,
@@ -278,7 +279,9 @@ namespace ProyectoASPNETGRUPOC.Services
                         c.Activo == true &&
                         c.FechaInicio <= DateTime.Now &&
                         c.FechaFin >= DateTime.Now);
+                var Cliente = await _context.Usuarios.Include(u => u.Rol).FirstOrDefaultAsync(u => u.id == idUsuario && u.Estado == true);
 
+                if (Cliente == null) throw new Exception("El usuario no existe");
                 if (cupon == null)
                     throw new Exception("El cupon no existe o está inactivo o fuera de fecha");
 
@@ -298,14 +301,15 @@ namespace ProyectoASPNETGRUPOC.Services
                 while (await _context.Cupones_Clientes.AnyAsync(cc => cc.NroCupon == nuevoNroCupon));
 
                 var nuevoRegistro = new CuponesClientes
-                {
+				{
                     Id_Cupon = idCupon,
                     Id_Usuario = idUsuario,
                     FechaAsignado = DateTime.Now,
                     NroCupon = nuevoNroCupon
                 };
+		
 
-                _context.Cupones_Clientes.Add(nuevoRegistro);
+				_context.Cupones_Clientes.Add(nuevoRegistro);
                 await _context.SaveChangesAsync();
 
                 return new DtoCuponesMuestra

@@ -103,11 +103,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
 				List<DtoCuponesMuestra> CuponesDisponibles = await CServices.ListaDeCuponesActivos();
 
 
-				return Ok(new
-				{
-					Mensaje = "Cupones disponibles:",
-					CuponesDisponibleS = CuponesDisponibles
-				});
+                return Ok(CuponesDisponibles);
 			}
 			catch (KeyNotFoundException ex)
 			{
@@ -192,20 +188,20 @@ namespace ProyectoASPNETGRUPOC.Controllers
         //Reclamar el cupon
         [HttpPost("/ReclamarCupon/{idCupon}")]
         [Authorize(Policy = "Clientes")]
-        public async Task<IActionResult> ReclamarCupon(int idCupon, int idUsuario)
+        public async Task<IActionResult> ReclamarCupon(int idCupon)
         {
             try
             {
+                var idClaim = User.FindFirst("Id")?.Value;
+                if (string.IsNullOrEmpty(idClaim)) throw new Exception("Token Incorrecto");
+                int idUsuario = int.Parse(idClaim);
                 var reclamo = await CServices
                     .ReclamarCupon(idCupon, idUsuario);
 
                 if (reclamo == null) return NotFound("Error al reclamar el cupon");
 
 
-                return Ok(new
-                {
-                    Mensaje = "El cupon fue reclamado con exito"
-                });
+                return Ok("El cupon fue reclamado con exito");
             }
             catch(Exception ex)
             {
@@ -214,42 +210,41 @@ namespace ProyectoASPNETGRUPOC.Controllers
         }
 
         //VerCupones del cliente
-        [HttpGet("cupones-del-cliente/{idUsuario}")]
+        [HttpGet("cupones-del-cliente/")]
         [Authorize]
-        public async Task<IActionResult> GetCuponesDelCliente(int idUsuario)
+        public async Task<IActionResult> GetCuponesDelCliente()
         {
             try
             {
-                var lista = await CServices.ObtenerCuponesDelCliente(idUsuario);
+				var idClaim = User.FindFirst("Id")?.Value;
+				if (string.IsNullOrEmpty(idClaim)) throw new Exception("Token Incorrecto");
+                int idUsuario = int.Parse(idClaim);
+				var lista = await CServices.ObtenerCuponesDelCliente(idUsuario);
 
-                return Ok(new
-                {
-                    Mensaje = "Cupones reclamados por el usuario",
-                    Cupones = lista
-                });
+                return Ok(lista);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Error = ex.Message });
+                return BadRequest(ex.Message);
             }
         }
         //Quemar el Cupon
-        [HttpPost("usar-cupon")]
+        [HttpPost("usar-cupon/{nroCupon}")]
         [Authorize]
-        public async Task<IActionResult> UsarCupon(string nroCupon, int idUsuario)
+        public async Task<IActionResult> UsarCupon(string nroCupon)
         {
             try
             {
-                var resultado = await CServices.UsarCuponReclamado(idUsuario, nroCupon);
+				var idClaim = User.FindFirst("Id")?.Value;
+				if (string.IsNullOrEmpty(idClaim)) throw new Exception("Token Incorrecto");
+				int idUsuario = int.Parse(idClaim);
+				var resultado = await CServices.UsarCuponReclamado(idUsuario, nroCupon);
 
-                return Ok(new
-                {
-                    Mensaje = $"El cupón {nroCupon} fue utilizado correctamente."
-                });
+                return Ok("El cupon fue usado con exito.");
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Error = ex.Message });
+                return BadRequest(ex.Message);
             }
         }
 
@@ -270,7 +265,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Error = ex.Message });
+                return BadRequest(ex.Message);
             }
         }
 

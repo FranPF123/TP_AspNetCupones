@@ -16,7 +16,7 @@ namespace ProyectoASPNETGRUPOC.Model.DTO
         [Required]
         public string Dni { get; set; }
         [Required]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "El email no es válido")]
         public string Email { get; set; }
         [JsonIgnore]
         public int Id_Rol { get; set; } = 2;

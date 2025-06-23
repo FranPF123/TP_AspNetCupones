@@ -5,6 +5,7 @@ using ProyectoASPNETGRUPOC.Data;
 using ProyectoASPNETGRUPOC.Interfaces;
 using ProyectoASPNETGRUPOC.Model;
 using ProyectoASPNETGRUPOC.Model.DTO;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -43,10 +44,11 @@ namespace ProyectoASPNETGRUPOC.Services
 
         public async Task Registrar(DtoUsuario dtoUsuario)
         {
-            if (await ExisteUserConEmail(dtoUsuario.Email) || await ExiseUserName(dtoUsuario.UserName))
+			if (await ExisteUserConEmail(dtoUsuario.Email) || await ExiseUserName(dtoUsuario.UserName))
             {
                 throw new KeyNotFoundException("Ya existe un Usuario con este Email o Correo.");
             }
+			
 			string passwordhHash = BCrypt.Net.BCrypt.HashPassword(dtoUsuario.Password);
             Usuario user = new Usuario()
             {
@@ -72,7 +74,7 @@ namespace ProyectoASPNETGRUPOC.Services
 			{
 					new Claim("Id", usuarioEntity.id.ToString()),
 					new Claim(ClaimTypes.Name, usuarioEntity.User_Name),
-					new Claim(ClaimTypes.Role, usuarioEntity.Rol.Nombre)
+					new Claim("role", usuarioEntity.Rol.Nombre)
 			};
 
 			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
@@ -91,6 +93,7 @@ namespace ProyectoASPNETGRUPOC.Services
 
 		private async Task<bool> ExisteUserConEmail(string Email)
 		{
+
 			var User = _context.Usuarios.Where(u => u.Email == Email).FirstOrDefault();
 			if (User == null) return false;
 			return true;
@@ -105,5 +108,6 @@ namespace ProyectoASPNETGRUPOC.Services
 
 			return true;
 		}
+
 	}
 }

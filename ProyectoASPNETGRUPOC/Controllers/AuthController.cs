@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProyectoASPNETGRUPOC.Interfaces;
 using ProyectoASPNETGRUPOC.Model.DTO;
 using ProyectoASPNETGRUPOC.Model;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProyectoASPNETGRUPOC.Controllers
 {
@@ -54,6 +55,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
         {
             try
             {
+
                 if (dtoUsuario == null) return BadRequest("Datos mal formados.");
 
                 await AServices.Registrar(dtoUsuario);
@@ -75,5 +77,6 @@ namespace ProyectoASPNETGRUPOC.Controllers
             }
 
         }
-    }
+
+	}
 }
