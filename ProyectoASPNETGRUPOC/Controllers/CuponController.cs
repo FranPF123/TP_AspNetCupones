@@ -15,7 +15,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
         private readonly IUsuarioServices UsuarioServices;
         private readonly IEmailService _emailService;
 
-        public CuponController(ICuponesServices cServices, UsuarioServices usuarioServices, IEmailService emailService)
+        public CuponController(ICuponesServices cServices, IUsuarioServices usuarioServices, IEmailService emailService)
         {
 			CServices = cServices;
             UsuarioServices = usuarioServices;
