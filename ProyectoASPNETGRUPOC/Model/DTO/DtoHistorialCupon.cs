@@ -3,6 +3,7 @@
     public class DtoHistorialCupon
     {
         public string NroCupon { get; set; }
+        public string Nombre { get; set; }
         public DateTime FechaUso { get; set; }
     }
 }
