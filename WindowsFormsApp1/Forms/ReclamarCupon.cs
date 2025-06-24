@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProyectoASPNETGRUPOC.Model.DTO;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,13 +17,13 @@ namespace WindowsFormsApp1
 {
 	public partial class ReclamarCupon : Form
 	{
-		public CuponServices CServices;
+		private readonly CuponServices CServices;
 
-		public List<DtoCuponMuestra> lista;
+		private List<DtoCuponesMuestraConArticulos> lista;
 		public ReclamarCupon(CuponServices cuponServices)
 		{
 			this.CServices = cuponServices;
-			lista = new List<DtoCuponMuestra>();
+			lista = new List<DtoCuponesMuestraConArticulos>();
 			InitializeComponent();
 		}
 

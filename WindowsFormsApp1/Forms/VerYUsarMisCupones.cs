@@ -18,8 +18,8 @@ namespace WindowsFormsApp1.Forms
 {
 	public partial class VerYUsarMisCupones : Form
 	{
-		public List<DtoCuponesClientes> ListaCupones;
-		public CuponServices CServices;
+		private List<DtoCuponesClientes> ListaCupones;
+		private readonly CuponServices CServices;
 		public VerYUsarMisCupones(CuponServices cServices)
 		{
 			ListaCupones = new List<DtoCuponesClientes>();

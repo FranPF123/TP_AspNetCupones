@@ -16,12 +16,13 @@ namespace WindowsFormsApp1.Forms
 {
 	public partial class FormInicio : Form
 	{
-		public readonly CuponServices cuponServices;
-		public readonly Form Login;
-
+		private readonly CuponServices cuponServices;
+		private readonly Form Login;
+		private readonly ArticuloServices artServices;
 		public FormInicio(Form login)
 		{
 			this.cuponServices = new CuponServices();
+			this.artServices = new ArticuloServices();
 			InitializeComponent();
 			this.Login = login;
 		}
@@ -48,6 +49,11 @@ namespace WindowsFormsApp1.Forms
 			if(Session.Rol == "Cliente")
 			{
 				Reportes.Visible = false;
+			}
+			else
+			{
+				UsarVerMisCupones.Visible = false;
+				ReclamarVerCupones.Visible = false;
 			}
 		}
 
@@ -78,6 +84,26 @@ namespace WindowsFormsApp1.Forms
 		private void label1_Click(object sender, EventArgs e)
 		{
 
+		}
+
+		private void historialCuponesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			abrirFormEnPanel(historialCuponesToolStripMenuItem, new HistorialCupones(cuponServices));
+		}
+
+		private void cuponesMasUsadosToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			abrirFormEnPanel(cuponesMasUsadosToolStripMenuItem, new CuponesMasUsados(cuponServices));
+		}
+
+		private void articulosMasUsadosToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			abrirFormEnPanel(articulosMasUsadosToolStripMenuItem, new ArtMasUsados(artServices));
+		}
+
+		private void cuponesMasReclamadosToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			abrirFormEnPanel(cuponesMasReclamadosToolStripMenuItem, new CuponesMasReclamados(cuponServices));
 		}
 	}
 }

@@ -93,6 +93,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\ArtMasUsados.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ArtMasUsados.Designer.cs">
+      <DependentUpon>ArtMasUsados.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Auth\Login.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,6 +110,24 @@
     </Compile>
     <Compile Include="Forms\Auth\Registro.Designer.cs">
       <DependentUpon>Registro.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\CuponesMasReclamados.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CuponesMasReclamados.Designer.cs">
+      <DependentUpon>CuponesMasReclamados.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\CuponesMasUsados.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CuponesMasUsados.Designer.cs">
+      <DependentUpon>CuponesMasUsados.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HistorialCupones.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\HistorialCupones.Designer.cs">
+      <DependentUpon>HistorialCupones.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormInicio.cs">
       <SubType>Form</SubType>
@@ -119,8 +143,14 @@
     </Compile>
     <Compile Include="Jwt\HerramientaJwt.cs" />
     <Compile Include="Model\CuponesDisponiblesContenedor.cs" />
+    <Compile Include="Model\DtoArticulo.cs" />
     <Compile Include="Model\DtoCuponesClientes.cs" />
+    <Compile Include="Model\DtoCuponesMuestraConArticulos.cs" />
+    <Compile Include="Model\DtoCuponesReclamados.cs" />
     <Compile Include="Model\DtoCuponMuestra.cs" />
+    <Compile Include="Model\DtoHistorialCupon.cs" />
+    <Compile Include="Model\DtoReporteArticulos.cs" />
+    <Compile Include="Model\DtoReportesCuponesUsados.cs" />
     <Compile Include="Model\DtoUsuario.cs" />
     <Compile Include="Model\LoginModel.cs" />
     <Compile Include="Model\ResponseLogin.cs" />
@@ -133,16 +163,29 @@
     <Compile Include="Forms\ReclamarCupon.Designer.cs">
       <DependentUpon>ReclamarCupon.cs</DependentUpon>
     </Compile>
+    <Compile Include="Services\ArticuloServices.cs" />
     <Compile Include="Services\AuthServices.cs" />
     <Compile Include="Services\CuponServices.cs" />
+    <EmbeddedResource Include="Forms\ArtMasUsados.resx">
+      <DependentUpon>ArtMasUsados.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Auth\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Auth\Registro.resx">
       <DependentUpon>Registro.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CuponesMasReclamados.resx">
+      <DependentUpon>CuponesMasReclamados.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CuponesMasUsados.resx">
+      <DependentUpon>CuponesMasUsados.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormInicio.resx">
       <DependentUpon>FormInicio.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\HistorialCupones.resx">
+      <DependentUpon>HistorialCupones.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\VerYUsarMisCupones.resx">
       <DependentUpon>VerYUsarMisCupones.cs</DependentUpon>

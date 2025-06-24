@@ -35,6 +35,10 @@
 			this.ReclamarVerCupones = new System.Windows.Forms.ToolStripMenuItem();
 			this.UsarVerMisCupones = new System.Windows.Forms.ToolStripMenuItem();
 			this.Reportes = new System.Windows.Forms.ToolStripMenuItem();
+			this.historialCuponesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.cuponesMasUsadosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.articulosMasUsadosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.cuponesMasReclamadosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -94,9 +98,42 @@
 			// 
 			// Reportes
 			// 
+			this.Reportes.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.historialCuponesToolStripMenuItem,
+            this.cuponesMasUsadosToolStripMenuItem,
+            this.articulosMasUsadosToolStripMenuItem,
+            this.cuponesMasReclamadosToolStripMenuItem});
 			this.Reportes.Name = "Reportes";
 			this.Reportes.Size = new System.Drawing.Size(65, 20);
 			this.Reportes.Text = "Reportes";
+			// 
+			// historialCuponesToolStripMenuItem
+			// 
+			this.historialCuponesToolStripMenuItem.Name = "historialCuponesToolStripMenuItem";
+			this.historialCuponesToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.historialCuponesToolStripMenuItem.Text = "Historial Cupones";
+			this.historialCuponesToolStripMenuItem.Click += new System.EventHandler(this.historialCuponesToolStripMenuItem_Click);
+			// 
+			// cuponesMasUsadosToolStripMenuItem
+			// 
+			this.cuponesMasUsadosToolStripMenuItem.Name = "cuponesMasUsadosToolStripMenuItem";
+			this.cuponesMasUsadosToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.cuponesMasUsadosToolStripMenuItem.Text = "Cupones mas usados";
+			this.cuponesMasUsadosToolStripMenuItem.Click += new System.EventHandler(this.cuponesMasUsadosToolStripMenuItem_Click);
+			// 
+			// articulosMasUsadosToolStripMenuItem
+			// 
+			this.articulosMasUsadosToolStripMenuItem.Name = "articulosMasUsadosToolStripMenuItem";
+			this.articulosMasUsadosToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.articulosMasUsadosToolStripMenuItem.Text = "Articulos mas usados";
+			this.articulosMasUsadosToolStripMenuItem.Click += new System.EventHandler(this.articulosMasUsadosToolStripMenuItem_Click);
+			// 
+			// cuponesMasReclamadosToolStripMenuItem
+			// 
+			this.cuponesMasReclamadosToolStripMenuItem.Name = "cuponesMasReclamadosToolStripMenuItem";
+			this.cuponesMasReclamadosToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.cuponesMasReclamadosToolStripMenuItem.Text = "Cupones mas reclamados";
+			this.cuponesMasReclamadosToolStripMenuItem.Click += new System.EventHandler(this.cuponesMasReclamadosToolStripMenuItem_Click);
 			// 
 			// FormInicio
 			// 
@@ -124,5 +161,9 @@
 		private System.Windows.Forms.ToolStripMenuItem ReclamarVerCupones;
 		private System.Windows.Forms.ToolStripMenuItem UsarVerMisCupones;
 		private System.Windows.Forms.ToolStripMenuItem Reportes;
+		private System.Windows.Forms.ToolStripMenuItem historialCuponesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem cuponesMasUsadosToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem articulosMasUsadosToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem cuponesMasReclamadosToolStripMenuItem;
 	}
 }

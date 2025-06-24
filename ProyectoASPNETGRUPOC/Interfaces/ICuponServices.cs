@@ -10,7 +10,7 @@ namespace ProyectoASPNETGRUPOC.Interfaces
 
 		Task<DtoCuponConArticulos> ObtenerCuponConArticulos(int idCupon);
 		Task<DtoCuponesMuestra> GetCuponPorId(int idCupones);
-		Task<List<DtoCuponesMuestra>> ListaDeCuponesActivos();
+		Task<List<DtoCuponesMuestraConArticulos>> ListaDeCuponesActivos();
         Task<List<DtoCuponesMuestra>> ObtenerTodosLosCupones();
 
         Task<bool> ModificarCupon(int id, DtoCupones dtoCupones);
@@ -25,7 +25,7 @@ namespace ProyectoASPNETGRUPOC.Interfaces
 		Task<DtoCuponesMuestra> ReclamarCupon(int idCupon, int idUsuario);
 		Task<List<DtoCuponesClientes>> ObtenerCuponesDelCliente(int idUsuario);
 		Task<bool> UsarCuponReclamado(int idUsuario, string nroCupon);
-		Task<List<DtoHistorialCupon>> ObtenerHistorialDeCupones(int idUsuario);
+		Task<List<DtoHistorialCupon>> ObtenerHistorialDeCupones();
 		//Reportes
         Task<List<DtoReporteCuponesUsados>> ReporteCuponesMasUsados();
         Task<List<DtoReporteCuponesUsados>> ReporteCuponesUsadosPorFechas(DateTime desde, DateTime hasta);

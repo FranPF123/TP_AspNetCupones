@@ -51,21 +51,27 @@ namespace ProyectoASPNETGRUPOC.Services
 		}
 
 		//5.Debe haber una lista de cupones activos y que se encuentren en el rango de fechas de uso
-		public async Task<List<DtoCuponesMuestra>> ListaDeCuponesActivos()
+		public async Task<List<DtoCuponesMuestraConArticulos>> ListaDeCuponesActivos()
 		{
             DateTime FechaActual = DateTime.Now;
-			List<DtoCuponesMuestra> ListaDeCuponesActivos = await _context.Cupones.Include(c => c.TipoCupon).Where(c => FechaActual < c.FechaFin && c.Activo == true).Select(c => new DtoCuponesMuestra
-			{
-                Id_Cupon = c.Id_Cupon,
-                Nombre = c.Nombre,
-				Descripcion = c.Descripcion,
-				PorcentajeDto = c.PorcentajeDto,
-				ImportePromo = c.ImportePromo,
-				FechaInicio = c.FechaInicio,
-				FechaFinal = c.FechaFin,
-				NombreTipoCupon = c.TipoCupon.Nombre,
-                Estado = c.Activo == true ? "Activo" : "Inactivo"
-            }).ToListAsync();
+            List<DtoCuponesMuestraConArticulos> ListaDeCuponesActivos = await _context.Cupones_Detalle.Where(cd => cd.Cupon.Activo == true && FechaActual < cd.Cupon.FechaFin)
+                .Select(cd => new DtoCuponesMuestraConArticulos
+                {
+                    Id_Cupon = cd.Cupon.Id_Cupon,
+                    Nombre = cd.Cupon.Nombre,
+                    Descripcion = cd.Cupon.Descripcion,
+                    PorcentajeDto = cd.Cupon.PorcentajeDto,
+                    ImportePromo = cd.Cupon.ImportePromo,
+                    FechaInicio = cd.Cupon.FechaInicio,
+                    FechaFinal = cd.Cupon.FechaFin,
+                    NombreTipoCupon = cd.Cupon.TipoCupon.Nombre,
+                    Estado = cd.Cupon.Activo == true ? "Activo" : "Inactivo",
+                    Articulo = new DTOArticulosMuestraFront
+                    {
+                        Nombre_articulo = cd.Articulos.Nombre_articulo,
+                        Precio = cd.Articulos.Precio
+                    }
+                }).ToListAsync();
 
 
 			if (!ListaDeCuponesActivos.Any()) throw new KeyNotFoundException("No se encontro ningun tipo de Cupon activo.");
@@ -410,17 +416,18 @@ namespace ProyectoASPNETGRUPOC.Services
         }
 
         //ver Historial de Cupones
-        public async Task<List<DtoHistorialCupon>> ObtenerHistorialDeCupones(int idUsuario)
+        public async Task<List<DtoHistorialCupon>> ObtenerHistorialDeCupones()
         {
             var historial = await _context.Cupones_Historial
-                .Include(h => h.Cupon)
-                .Where(ch => ch.Id_Usuario == idUsuario)
+                .Include(ch => ch.Usuario)
+                .Include(ch => ch.Cupon)
                 .OrderByDescending(ch => ch.FechaUso)
                 .Select(ch => new DtoHistorialCupon
                 {
                     NroCupon = ch.NroCupon,
                     Nombre = ch.Cupon.Nombre,
-                    FechaUso = ch.FechaUso
+                    FechaUso = ch.FechaUso,
+                    NombreUsuario = ch.Usuario.User_Name
                 })
                 .ToListAsync();
 

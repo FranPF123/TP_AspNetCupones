@@ -1,4 +1,6 @@
-﻿namespace ProyectoASPNETGRUPOC.Model.DTO
+﻿using System;
+
+namespace ProyectoASPNETGRUPOC.Model.DTO
 {
     public class DtoHistorialCupon
     {

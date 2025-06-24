@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsFormsApp1.Forms;
 using WindowsFormsApp1.Model;
 
 namespace WindowsFormsApp1.Services
@@ -22,7 +23,7 @@ namespace WindowsFormsApp1.Services
 			this.httpClient = new HttpClient();
 		}
 
-		public async Task<List<DtoCuponMuestra>> obtenerCuponesActivos()
+		public async Task<List<DtoCuponesMuestraConArticulos>> obtenerCuponesActivos()
 		{
 			try
 			{
@@ -37,7 +38,7 @@ namespace WindowsFormsApp1.Services
 
 				if (response.IsSuccessStatusCode)
 				{
-					List<DtoCuponMuestra> lista = JsonConvert.DeserializeObject<List<DtoCuponMuestra>>(jsonResponse);
+					List<DtoCuponesMuestraConArticulos> lista = JsonConvert.DeserializeObject<List<DtoCuponesMuestraConArticulos>>(jsonResponse);
 					return lista;
 				}
 
@@ -75,6 +76,99 @@ namespace WindowsFormsApp1.Services
 				throw new Exception(ex.Message);
 			}
 
+		}
+
+
+		public async Task<List<DtoHistorialCupon>> HistorialCupones()
+		{
+			try
+			{
+				string url = $"https://localhost:7199/api/Cupon/historial-cupones-usados/";
+				httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Session.Token);
+
+
+				HttpResponseMessage response = await httpClient.GetAsync(url);
+				string jsonResponse = await response.Content.ReadAsStringAsync();
+				if (response.IsSuccessStatusCode)
+				{
+					List<DtoHistorialCupon> listaHistorial = JsonConvert.DeserializeObject<List<DtoHistorialCupon>>(jsonResponse);
+					return listaHistorial;
+				}
+				Permisos(response);
+				throw new Exception(jsonResponse);
+			}
+			catch (Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
+		}
+		public async Task<List<DtoCuponesReclamados>> CuponesMasReclamados()
+		{
+			try
+			{
+				string url = $"https://localhost:7199/api/Cupon/reporte/mas-reclamados";
+				httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Session.Token);
+
+
+				HttpResponseMessage response = await httpClient.GetAsync(url);
+				string jsonResponse = await response.Content.ReadAsStringAsync();
+				if (response.IsSuccessStatusCode)
+				{
+					List<DtoCuponesReclamados> ListaCuponesMasReclamados = JsonConvert.DeserializeObject<List<DtoCuponesReclamados>>(jsonResponse);
+					return ListaCuponesMasReclamados;
+				}
+				Permisos(response);
+				throw new Exception(jsonResponse);
+			}
+			catch( Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
+		}
+		public async Task<List<DtoReporteCuponesUsados>> ReporteCuponesUsadosPorFechas(DateTime Desde, DateTime Hasta)
+		{
+			try
+			{
+				string url = $"https://localhost:7199/api/Cupon/reporte/usados-por-fechas?desde={Desde:yyyy-MM-dd}&hasta={Hasta:yyyy-MM-dd}";
+
+				httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Session.Token);
+
+				HttpResponseMessage response = await httpClient.GetAsync(url);
+				string jsonResponse = await response.Content.ReadAsStringAsync();
+				if (response.IsSuccessStatusCode)
+				{
+					List<DtoReporteCuponesUsados> listaCuponesMasUsados = JsonConvert.DeserializeObject<List<DtoReporteCuponesUsados>>(jsonResponse);
+					return listaCuponesMasUsados;
+				}
+				Permisos(response);
+				throw new Exception(jsonResponse);
+			}catch(Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
+		}
+		public async Task<List<DtoReporteCuponesUsados>> ReporteCuponesMasUsados()
+		{
+			try
+			{
+				string url = $"https://localhost:7199/api/Cupon/reporte/mas-usados";
+				httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", Session.Token);
+
+				HttpResponseMessage response = await httpClient.GetAsync(url);
+				string jsonResponse = await response.Content.ReadAsStringAsync();
+
+				if (response.IsSuccessStatusCode)
+				{
+					List<DtoReporteCuponesUsados> ListaCuponesMasUsados = JsonConvert.DeserializeObject<List<DtoReporteCuponesUsados>>(jsonResponse);
+					return ListaCuponesMasUsados;
+				}
+
+				Permisos(response);
+				throw new Exception(jsonResponse);
+			}catch(Exception ex)
+			{
+				throw new Exception(ex.Message);
+			}
 		}
 		public async Task<string> usarCupon(string nroCupon)
 		{
@@ -131,7 +225,7 @@ namespace WindowsFormsApp1.Services
 			}
 			catch (Exception ex)
 			{
-				return ex.Message;
+				throw new Exception(ex.Message);
 			}
 		}
 		public void Permisos(HttpResponseMessage response)

@@ -105,7 +105,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
 		{
 			try
 			{
-				List<DtoCuponesMuestra> CuponesDisponibles = await CServices.ListaDeCuponesActivos();
+				List<DtoCuponesMuestraConArticulos> CuponesDisponibles = await CServices.ListaDeCuponesActivos();
 
 
                 return Ok(CuponesDisponibles);
@@ -270,26 +270,28 @@ namespace ProyectoASPNETGRUPOC.Controllers
             }
         }
 
-        //ver historial de cupones usados
-        [HttpGet("historial-cupones-usados/{idUsuario}")]
-        [Authorize]
-        public async Task<IActionResult> HistorialCupones(int idUsuario)
+
+
+
+
+
+		//Authorize roles y admin: 
+		[HttpGet("historial-cupones-usados")]
+		[Authorize(Policy = "Auditor")]
+		public async Task<IActionResult> HistorialCupones()
         {
             try
             {
-                var historial = await CServices.ObtenerHistorialDeCupones(idUsuario);
+                var historial = await CServices.ObtenerHistorialDeCupones();
 
-                return Ok(new
-                {
-                    Mensaje = $"Historial de cupones utilizados por el usuario {idUsuario}",
-                    Historial = historial
-                });
+                return Ok(historial);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpGet("reporte/mas-usados")]
         [Authorize(Policy = "Auditor")]
@@ -299,6 +301,8 @@ namespace ProyectoASPNETGRUPOC.Controllers
             return Ok(resultado);
         }
 
+
+
         [HttpGet("reporte/usados-por-fechas")]
         [Authorize(Policy = "Auditor")]
         public async Task<IActionResult> ReporteCuponesPorFechas(DateTime desde, DateTime hasta)
@@ -307,6 +311,9 @@ namespace ProyectoASPNETGRUPOC.Controllers
             return Ok(resultado);
         }
 
+
+
+
         [HttpGet("reporte/mas-reclamados")]
         [Authorize(Policy = "Auditor")]
         public async Task<IActionResult> ReporteCuponesMasReclamados()
@@ -314,11 +321,7 @@ namespace ProyectoASPNETGRUPOC.Controllers
             try
             {
                 var resultado = await CServices.ObtenerCuponesMasReclamados();
-                return Ok(new
-                {
-                    Mensaje = "Estos fueron los cupones mas reclamados este mes:",
-                    Cupones = resultado
-                });
+                return Ok(resultado);
             }
             catch (Exception ex)
             {

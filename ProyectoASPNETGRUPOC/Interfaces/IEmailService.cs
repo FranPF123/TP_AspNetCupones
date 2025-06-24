@@ -1,4 +1,6 @@
-﻿namespace ProyectoASPNETGRUPOC.Interfaces
+﻿using System.Transactions;
+
+namespace ProyectoASPNETGRUPOC.Interfaces
 {
     public interface IEmailService
     {
