@@ -13,5 +13,8 @@ namespace ProyectoASPNETGRUPOC.Interfaces
         Task<bool> existeArticuloId(int idaArticulo);
 
         Task<bool> precioDeArticulo(int idArticulo);
+
+        //reporte
+        Task<List<DtoReporteArticulos>> ArticulosMasUsados();
     }
 }

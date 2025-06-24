@@ -133,5 +133,25 @@ namespace ProyectoASPNETGRUPOC.Services
             return false;
 
 		}
-	}
+
+        public async Task<List<DtoReporteArticulos>> ArticulosMasUsados()
+        {
+            var reporte = await _context.Cupones_Detalle
+                .GroupBy(cd => cd.Id_Articulo)
+                .Select(g => new DtoReporteArticulos
+                {
+                    Id_Articulo = g.Key,
+                    Nombre = _context.Articulos
+                        .Where(a => a.Id_Articulo == g.Key)
+                        .Select(a => a.Nombre_articulo)
+                        .FirstOrDefault(),
+                    Cantidad_Usos = g.Sum(x => x.cantidad)
+                })
+                .OrderByDescending(x => x.Cantidad_Usos)
+                .ToListAsync();
+
+            return reporte;
+        }
+
+    }
 }
