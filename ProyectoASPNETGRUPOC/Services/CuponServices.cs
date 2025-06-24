@@ -4,6 +4,7 @@ using ProyectoASPNETGRUPOC.Data;
 using ProyectoASPNETGRUPOC.Interfaces;
 using ProyectoASPNETGRUPOC.Model;
 using ProyectoASPNETGRUPOC.Model.DTO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ProyectoASPNETGRUPOC.Services
 {
@@ -391,6 +392,7 @@ namespace ProyectoASPNETGRUPOC.Services
             // Crear historial
             var historial = new CuponesHistorial
             {
+                Id_Cupon = cuponReclamado.Id_Cupon,
                 NroCupon = cuponReclamado.NroCupon,
                 Id_Usuario = idUsuario,
                 FechaUso = DateTime.Now
@@ -411,11 +413,13 @@ namespace ProyectoASPNETGRUPOC.Services
         public async Task<List<DtoHistorialCupon>> ObtenerHistorialDeCupones(int idUsuario)
         {
             var historial = await _context.Cupones_Historial
+                .Include(h => h.Cupon)
                 .Where(ch => ch.Id_Usuario == idUsuario)
                 .OrderByDescending(ch => ch.FechaUso)
                 .Select(ch => new DtoHistorialCupon
                 {
                     NroCupon = ch.NroCupon,
+                    Nombre = ch.Cupon.Nombre,
                     FechaUso = ch.FechaUso
                 })
                 .ToListAsync();
@@ -426,8 +430,58 @@ namespace ProyectoASPNETGRUPOC.Services
             return historial;
         }
 
+        //REPORTES 
+        public async Task<List<DtoReporteCuponesUsados>> ReporteCuponesMasUsados()
+        {
+            var reporte = await _context.Cupones_Historial
+                .GroupBy(h => new { h.Id_Cupon, h.Cupon.Nombre })
+                .Select(g => new DtoReporteCuponesUsados
+                {
+                    IdCupon = g.Key.Id_Cupon,
+                    Nombre = g.Key.Nombre,
+                    CantidadUsos = g.Count()
+                })
+                .OrderByDescending(r => r.CantidadUsos)
+                .ToListAsync();
+
+            return reporte;
+        }
 
 
+        public async Task<List<DtoReporteCuponesUsados>> ReporteCuponesUsadosPorFechas(DateTime desde, DateTime hasta)
+        {
+            var reporte = await _context.Cupones_Historial
+                .Where(h => h.FechaUso >= desde && h.FechaUso <= hasta)
+                .GroupBy(h => h.Id_Cupon)
+                .Select(g => new DtoReporteCuponesUsados
+                {
+                    IdCupon = g.Key,
+                    Nombre = _context.Cupones
+                        .Where(c => c.Id_Cupon == g.Key)
+                        .Select(c => c.Nombre)
+                        .FirstOrDefault(),
+                    CantidadUsos = g.Count()
+                })
+                .OrderByDescending(r => r.CantidadUsos)
+                .ToListAsync();
+
+            return reporte;
+        }
+
+
+        public async Task<List<DtoCuponesReclamados>> ObtenerCuponesMasReclamados()
+        {
+            var resultado = await _context.Cupones_Clientes.GroupBy(cc => cc.Id_Cupon).Select(group => new DtoCuponesReclamados
+        {
+            Id_Cupon = group.Key,
+            NombreDelCupon = group.First().Cupon.Nombre,
+            CantidadReclamaciones = group.Count()
+        })
+        .OrderByDescending(c => c.CantidadReclamaciones)
+        .ToListAsync();
+
+            return resultado;
+        }
     }
 
 

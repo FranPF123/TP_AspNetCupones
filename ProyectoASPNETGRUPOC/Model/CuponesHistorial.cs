@@ -5,6 +5,7 @@ namespace ProyectoASPNETGRUPOC.Model
     [Table("Cupones_Historial")]
     public class CuponesHistorial
     {
+        public int Id_Cupon { get; set; }
         public string NroCupon { get; set; }
 
         public DateTime FechaUso { get; set; }
@@ -13,5 +14,7 @@ namespace ProyectoASPNETGRUPOC.Model
 
         [ForeignKey("Id_Usuario")]
         public virtual Usuario Usuario { get; set; }
+        [ForeignKey("Id_Cupon")]
+        public virtual Cupones Cupon { get; set; }
     }
 }
